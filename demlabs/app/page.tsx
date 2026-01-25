@@ -129,7 +129,7 @@ const Website = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4">Featured Projects</h2>
-              <p className="text-gray-400">Pioneering solutions built in the Demplabs ecosystem.</p>
+              <p className="text-gray-400">Pioneering solutions built in the Demlabs ecosystem.</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <ProjectCard 
@@ -212,7 +212,7 @@ const ProjectCard = ({ title, tag, desc }: any) => (
     <span className="text-xs font-bold text-cyan-400 tracking-widest uppercase mb-4 block">{tag}</span>
     <h3 className="text-2xl font-bold mb-4">{title}</h3>
     <p className="text-gray-400 text-sm leading-relaxed mb-6">{desc}</p>
-    <div className="text-cyan-400 font-semibold text-sm group-hover:translate-x-2 transition-transform">View Project →</div>
+    <div className="text-cyan-400 font-semibold text-sm group-hover:translate-x-2 transition-transform"><a href="https://github.com/DemLabs-Inc">View Project On Github</a></div>
   </motion.div>
 );
 
