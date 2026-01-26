@@ -11,6 +11,9 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "DemLabs",
   description: "Innovating The Future of Software",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -19,14 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   <ClerkProvider>
-    <html lang="en" className="dark">  
-      <body
-        className={`${roboto.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-   </ClerkProvider>    
+    <ClerkProvider>
+      <html lang="en" className="dark">
+        <body
+          className={`${roboto.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
