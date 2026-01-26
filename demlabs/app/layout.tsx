@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "DemLabs",
   description: "Innovating The Future of Software",
   icons: {
-    icon: "/favicon.png",
+    icon: "/logo.png",
   },
 };
 
