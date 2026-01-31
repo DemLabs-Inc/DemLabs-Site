@@ -216,6 +216,22 @@ const Website = () => {
           </div>
         </section>
 
+        {/* About */}
+        <section id="about" className="py-24 px-6 border-t border-white/5">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-8">Redefining Tech at <span className="text-cyan-400">DemLabs</span></h2>
+              <p className="text-gray-400 text-lg leading-relaxed mb-6">
+                Demplabs is a next-generation technology lab creating intelligent software that transforms the way people interact with technology. We design AI agents, smart tools, and digital platforms that are not only powerful but also sleek, intuitive, and futuristic. Our mission is to push the boundaries of innovation, building software that adapts, learns, and empowers. We combine creativity, technology, and design to craft solutions that make life easier, work smarter, and bring the future closer. Today at Demplabs, we don't just develop software; we redefine what technology can do. Every project is a step towards smarter, more connected, and more intelligent experiences for users worldwide.
+              </p>
+              <a href="#contact" className="text-cyan-400 font-bold hover:underline">Contact us →</a>
+            </div>
+            <div className="h-64 bg-cyan-500/5 rounded-3xl border border-cyan-500/10 flex items-center justify-center">
+               <Icons.Rocket />
+            </div>
+          </div>
+        </section>
+
         {/* Footer */}
         <footer id="contact" className="py-20 border-t border-white/5 text-center bg-[#0D121F]">
           <h3 className="text-2xl font-bold mb-6">Build the future with us.</h3>
