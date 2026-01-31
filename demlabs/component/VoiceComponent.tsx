@@ -15,7 +15,9 @@ const VoiceChat = () => {
 
   const conversation = useConversation({
     onConnect: () => console.log("Connected to ElevenLabs"),
-    onDisconnect: () => console.log("Disconnected from ElevenLabs"),
+    onDisconnect: () => {
+      console.log("Disconnected from ElevenLabs");
+    },
     onMessage: (message: any) => console.log("Received message:", message),
     onError: (error: string | Error) => {
       const msg = typeof error === "string" ? error : error.message;
@@ -76,6 +78,7 @@ const VoiceChat = () => {
       setErrorMessage("Failed to change volume");
     }
   };
+
 
   return (
     <Card className="w-full max-w-md mx-auto">
