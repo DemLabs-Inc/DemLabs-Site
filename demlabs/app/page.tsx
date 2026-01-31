@@ -3,6 +3,9 @@
 import { useRef, useState, useEffect } from "react";
 import { SignedIn, SignedOut, SignIn, UserButton } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
+import { BoltIcon, BotIcon } from "lucide-react";
+import A from "@dl/component/Ai";
+import Image from "next/image";
 
 /* -------------------- ASSETS & ICONS -------------------- */
 const Icons = {
@@ -111,16 +114,14 @@ const Website = () => {
                 <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
                 DemLabs Intelligence
               </div>
-              <h1 className="text-5xl lg:text-[4.2rem] font-extrabold leading-[1.15] mb-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-[4.2rem] font-extrabold leading-[1.15] mb-6">
                 Innovating <br /> The Future Of <span className="text-cyan-400">Software</span>
               </h1>
               <p className="text-lg text-gray-400 max-w-xl mb-10 leading-relaxed">
                 We design futuristic AI systems, interfaces, and SaaS platforms with a focus on innovation, appearance, and performance.
               </p>
               <div className="flex gap-4">
-                <button onClick={() => setIsAiOpen(true)} className="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-black rounded-md font-bold transition-all hover:scale-105">
-                  Launch Consultant
-                </button>
+                <a href="#contact" className="px-8 py-4 border border-white/10 hover:bg-white/5 rounded-md font-bold transition-all">Contact</a>
                 <a href="#about" className="px-8 py-4 border border-white/10 hover:bg-white/5 rounded-md font-bold transition-all">About Us</a>
               </div>
             </motion.div>
@@ -145,40 +146,61 @@ const Website = () => {
           className="fixed bottom-8 right-8 z-50 w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center text-black shadow-[0_0_30px_rgba(6,182,212,0.4)] group"
         >
           <div className="absolute inset-0 rounded-2xl bg-cyan-400 animate-ping opacity-20 group-hover:opacity-40" />
-          <Icons.Brain />
+          <BoltIcon/>
         </motion.button>
 
-        {/* AI Console Overlay */}
+       {/* AI Console Overlay */}
         <AnimatePresence>
           {isAiOpen && (
             <>
+              {/* Backdrop */}
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 onClick={() => setIsAiOpen(false)}
                 className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60]"
               />
+
               <motion.div
-                initial={{ opacity: 0, x: 100, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 100, scale: 0.95 }}
-                className="fixed top-4 right-4 bottom-4 w-full max-w-[480px] bg-[#0B0F19] border border-white/10 rounded-[2.5rem] z-[70] shadow-2xl flex flex-col overflow-hidden"
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                /* MOBILE: Centered, fits screen exactly, no overflow.
+                   TABLET/PC: Snaps to right, standard width.
+                */
+                className={`
+                  fixed z-[70] bg-[#0B0F19] border border-white/10 shadow-2xl flex flex-col
+                  
+                  /* Mobile: 95% width, Dynamic height to prevent scrolling, centered */
+                  bottom-4 left-1/2 -translate-x-1/2 w-[95%] h-[calc(100dvh-2rem)] rounded-[2rem]
+                  
+                  /* Tablet/PC: Right-aligned, fixed width */
+                  md:translate-x-0 md:left-auto md:right-4 md:top-4 md:bottom-4 md:w-full md:max-w-[480px] md:h-auto md:rounded-[2.5rem]
+                `}
               >
-                <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/5">
+                {/* Header - Compact for mobile */}
+                <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between bg-white/5 shrink-0">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-cyan-500 animate-pulse" />
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-500">DemLabs Consulting AI</span>
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-cyan-500 animate-pulse" />
+                    <span className="text-[9px] md:text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-500">
+                      Consulting AI
+                    </span>
                   </div>
-                  <button onClick={() => setIsAiOpen(false)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all">✕</button>
+                  <button 
+                    onClick={() => setIsAiOpen(false)} 
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all"
+                  >
+                    ✕
+                  </button>
                 </div>
                 
-                <div className="flex-1 relative bg-[#0D121F]">
-                  {/* INSERT YOUR ELEVENLABS COMPONENT HERE */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-10">
-                    <div className="w-20 h-20 rounded-full border border-cyan-500/20 flex items-center justify-center mb-6 animate-pulse">
-                      <Icons.Cpu />
-                    </div>
-                    <h4 className="text-xl font-bold text-white mb-2">Neural Link Ready</h4>
-                    <p className="text-gray-500 text-sm font-mono tracking-tighter italic">Initializing Consulting Session Component...</p>
+                {/* AI Content Area: 
+                   'flex-1' makes it take up all remaining space.
+                   'overflow-hidden' prevents the window itself from scrolling.
+                */}
+                <div className="flex-1 relative bg-[#0D121F] overflow-hidden flex flex-col">
+                  {/* We wrap <A /> in a container that forces it to fit */}
+                  <div className="flex-1 w-full h-full max-h-full">
+                    <A />
                   </div>
                 </div>
               </motion.div>
@@ -222,9 +244,8 @@ const Website = () => {
             <div>
               <h2 className="text-4xl font-bold mb-8">Redefining Tech at <span className="text-cyan-400">DemLabs</span></h2>
               <p className="text-gray-400 text-lg leading-relaxed mb-6">
-                Demplabs is a next-generation technology lab creating intelligent software that transforms the way people interact with technology. We design AI agents, smart tools, and digital platforms that are not only powerful but also sleek, intuitive, and futuristic. Our mission is to push the boundaries of innovation, building software that adapts, learns, and empowers. We combine creativity, technology, and design to craft solutions that make life easier, work smarter, and bring the future closer. Today at Demplabs, we don't just develop software; we redefine what technology can do. Every project is a step towards smarter, more connected, and more intelligent experiences for users worldwide.
+                DemLabs is a next-generation technology lab creating intelligent software that transforms the way people interact with technology. We design AI agents, smart tools, and digital platforms that are not only powerful but also sleek, intuitive, and futuristic. Our mission is to push the boundaries of innovation, building software that adapts, learns, and empowers. We combine creativity, technology, and design to craft solutions that make life easier, work smarter, and bring the future closer. Today at DemLabs, we don't just develop software; we redefine what technology can do. Every project is a step towards smarter, more connected, and more intelligent experiences for users worldwide.
               </p>
-              <a href="#contact" className="text-cyan-400 font-bold hover:underline">Contact us →</a>
             </div>
             <div className="h-64 bg-cyan-500/5 rounded-3xl border border-cyan-500/10 flex items-center justify-center">
                <Icons.Rocket />
@@ -247,7 +268,7 @@ const Website = () => {
   );
 };
 
-/* -------------------- SUB-COMPONENTS -------------------- */
+/* ... (ProjectCard and ServiceCard remain unchanged) ... */
 
 const ProjectCard = ({ title, tag, desc }: any) => (
   <motion.div whileHover={{ y: -10 }} className="group p-8 rounded-2xl bg-[#111625] border border-white/5 hover:border-cyan-500/50 transition-all cursor-pointer relative overflow-hidden">
