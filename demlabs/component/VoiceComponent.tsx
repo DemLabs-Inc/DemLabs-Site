@@ -1,14 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
-// ElevenLabs
+import React, { useEffect, useState, useCallback } from "react";
 import { useConversation } from "@11labs/react";
-
-// UI
 import { Button } from "@dl/component/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@dl/component/ui/card";
-import { Mic, MicOff, Volume2, VolumeX } from "lucide-react";
+import { Mic, MicOff, Volume2, VolumeX, Loader2 } from "lucide-react";
 
 const VoiceChat = () => {
   const [hasPermission, setHasPermission] = useState(false);
@@ -16,68 +12,73 @@ const VoiceChat = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const conversation = useConversation({
-    onConnect: () => {
-      console.log("Connected to ElevenLabs");
-    },
-    onDisconnect: () => {
-      console.log("Disconnected from ElevenLabs");
-    },
-    onMessage: (message) => {
-      console.log("Received message:", message);
-    },
+    onConnect: () => console.log("Connected to ElevenLabs"),
+    onDisconnect: () => console.log("Disconnected from ElevenLabs"),
+    onMessage: (message) => console.log("Received message:", message),
     onError: (error: string | Error) => {
-      setErrorMessage(typeof error === "string" ? error : error.message);
-      console.error("Error:", error);
+      const msg = typeof error === "string" ? error : error.message;
+      setErrorMessage(msg);
+      console.error("ElevenLabs Error:", msg);
     },
   });
 
   const { status, isSpeaking } = conversation;
 
+  // 1. Improved Permission Check
   useEffect(() => {
-    // Request microphone permission on component mount
     const requestMicPermission = async () => {
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         setHasPermission(true);
+        // Important: Stop the tracks so the mic isn't "busy" when the SDK starts
+        stream.getTracks().forEach(track => track.stop());
       } catch (error) {
         setErrorMessage("Microphone access denied");
         console.error("Error accessing microphone:", error);
       }
     };
-
     requestMicPermission();
   }, []);
 
-  const handleStartConversation = async () => {
+  // 2. Robust Start Handler
+  const handleStartConversation = useCallback(async () => {
+    const agentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID;
+
+    if (!agentId) {
+      setErrorMessage("Missing NEXT_PUBLIC_ELEVENLABS_AGENT_ID in env");
+      return;
+    }
+
     try {
-      // Replace with your actual agent ID or URL
-      const conversationId = await conversation.startSession({
-        agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
-        connectionType: "websocket",
+      setErrorMessage("");
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // The fix: Add connectionType here
+      await conversation.startSession({
+        agentId: agentId,
+        connectionType: "websocket", 
       });
-      console.log("Started conversation:", conversationId);
     } catch (error) {
       setErrorMessage("Failed to start conversation");
-      console.error("Error starting conversation:", error);
+      console.error("Start Error:", error);
     }
-  };
+  }, [conversation]);
 
-  const handleEndConversation = async () => {
+  const handleEndConversation = useCallback(async () => {
     try {
       await conversation.endSession();
     } catch (error) {
-      setErrorMessage("Failed to end conversation");
-      console.error("Error ending conversation:", error);
+      console.error("End Error:", error);
     }
-  };
+  }, [conversation]);
 
   const toggleMute = async () => {
     try {
+      // Note: setVolume usually takes { volume: number } (0 to 1)
       await conversation.setVolume({ volume: isMuted ? 1 : 0 });
       setIsMuted(!isMuted);
     } catch (error) {
-      setErrorMessage("Failed to change volume");
-      console.error("Error changing volume:", error);
+      console.error("Volume Error:", error);
     }
   };
 
@@ -86,20 +87,14 @@ const VoiceChat = () => {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Voice Chat
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={toggleMute}
-              disabled={status !== "connected"}
-            >
-              {isMuted ? (
-                <VolumeX className="h-4 w-4" />
-              ) : (
-                <Volume2 className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleMute}
+            disabled={status !== "connected"}
+          >
+            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -117,26 +112,28 @@ const VoiceChat = () => {
             ) : (
               <Button
                 onClick={handleStartConversation}
-                disabled={!hasPermission}
+                disabled={!hasPermission || status === "connecting"}
                 className="w-full"
               >
-                <Mic className="mr-2 h-4 w-4" />
-                Start Conversation
+                {status === "connecting" ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Mic className="mr-2 h-4 w-4" />
+                )}
+                {status === "connecting" ? "Connecting..." : "Start Conversation"}
               </Button>
             )}
           </div>
 
-          <div className="text-center text-sm">
+          <div className="text-center text-sm min-h-[20px]">
             {status === "connected" && (
-              <p className="text-green-600">
+              <p className={isSpeaking ? "text-blue-600 font-medium" : "text-green-600"}>
                 {isSpeaking ? "Agent is speaking..." : "Listening..."}
               </p>
             )}
-            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-            {!hasPermission && (
-              <p className="text-yellow-600">
-                Please allow microphone access to use voice chat
-              </p>
+            {errorMessage && <p className="text-red-500 font-semibold">{errorMessage}</p>}
+            {!hasPermission && !errorMessage && (
+              <p className="text-yellow-600">Please allow microphone access</p>
             )}
           </div>
         </div>
