@@ -86,7 +86,7 @@ const VoiceChat = () => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          Voice Chat
+          C.A.T
           <Button
             variant="outline"
             size="icon"
@@ -107,7 +107,7 @@ const VoiceChat = () => {
                 className="w-full"
               >
                 <MicOff className="mr-2 h-4 w-4" />
-                End Conversation
+                End C.A.T
               </Button>
             ) : (
               <Button
@@ -120,7 +120,7 @@ const VoiceChat = () => {
                 ) : (
                   <Mic className="mr-2 h-4 w-4" />
                 )}
-                {status === "connecting" ? "Connecting..." : "Start Conversation"}
+                {status === "connecting" ? "Connecting..." : "Start C.A.T"}
               </Button>
             )}
           </div>
@@ -128,7 +128,7 @@ const VoiceChat = () => {
           <div className="text-center text-sm min-h-[20px]">
             {status === "connected" && (
               <p className={isSpeaking ? "text-blue-600 font-medium" : "text-green-600"}>
-                {isSpeaking ? "Agent is speaking..." : "Listening..."}
+                {isSpeaking ? "CAT is speaking..." : "Listening..."}
               </p>
             )}
             {errorMessage && <p className="text-red-500 font-semibold">{errorMessage}</p>}
