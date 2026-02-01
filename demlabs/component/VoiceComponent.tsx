@@ -113,7 +113,7 @@ const VoiceChat = () => {
               <Button
                 onClick={handleStartConversation}
                 disabled={!hasPermission || status === "connecting"}
-                className="w-full hover:bg-green-600"
+                className="w-full bg-blue-120 hover:bg-green-600"
               >
                 <Mic className="mr-2 h-4 w-4" />
                 {status === "connecting" ? "Connecting..." : "Start CAT"}
